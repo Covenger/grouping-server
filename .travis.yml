@@ -33,6 +33,20 @@ deploy:
       repo: Covenger/grouping-server #Github 주소
       branch: master
 
+ - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: grouping-server-deploy # S3 버킷
+    key: grouping-server.zip # S3 버킷에 저장된 grouping-server.zip 파일을 EC2로 배포
+    bundle_type: zip
+    application: grouping-server # 웹 콘솔에서 등록한 CodeDeploy 어플리케이션
+    deployment_group: covenger # 웹 콘솔에서 등록한 CodeDeploy 배포 그룹
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      repo: Covenger/grouping-server
+      branch: master
+
 # CI 실행 완료시 메일로 알람
 notifications:
   email:
