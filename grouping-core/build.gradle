@@ -1,0 +1,20 @@
+bootJar {
+    enabled = false
+}
+
+
+final String DEFAULT_PROFILE = 'local'
+allprojects {
+    if (!project.hasProperty('profile') || !profile) {
+        ext.profile = DEFAULT_PROFILE
+    }
+
+    println "profile: $profile"
+    sourceSets {
+        main {
+            resources {
+                srcDir "src/main/resources-${profile}"
+            }
+        }
+    }
+}
