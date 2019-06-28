@@ -1,34 +1,111 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.4.RELEASE'
+        springBootVersion = '2.0.1.RELEASE'
+        hibernateVersion = '5.2.12.Final'
+        lombokVersion = '1.16.18'
+        logbackVersion = '1.2.3'
+        slf4jVersion = '1.7.25'
+        junitVersion = '4.12'
     }
     repositories {
         mavenCentral()
+        mavenLocal()
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+        classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+        classpath("org.hibernate:hibernate-gradle-plugin:${hibernateVersion}")
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
+subprojects {
+    group = 'com.covengers.grouping'
+    version = '1.0.0-SNAPSHOT'
 
-group = 'com.covenger'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.hibernate.orm'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-idea'
 
-repositories {
-    mavenCentral()
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    compileJava.dependsOn(processResources)
+    bootRun {
+        sourceResources sourceSets.main
+    }
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        // spring family
+        compile("org.springframework.boot:spring-boot-configuration-processor")
+        compile('org.springframework.boot:spring-boot-starter-actuator')
+        compile("org.springframework.boot:spring-boot-starter-web")
+        compile('org.springframework.boot:spring-boot-starter-aop')
+        compile('org.springframework.boot:spring-boot-starter-cache')
+        compile('org.springframework.boot:spring-boot-starter-data-jpa')
+        compile('org.springframework.boot:spring-boot-starter-data-redis')
+        compile("org.springframework.boot:spring-boot-starter-jdbc")
+        compile('org.springframework.boot:spring-boot-starter-security')
+        compile('org.springframework.boot:spring-boot-devtools')
+        compile('org.springframework.integration:spring-integration-core')
+
+
+        compile("com.zaxxer:HikariCP:2.7.2")
+        compile("mysql:mysql-connector-java:5.1.44")
+        compile "org.hibernate:hibernate-core:${hibernateVersion}"
+        compile "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
+        compile "org.hibernate:hibernate-java8:${hibernateVersion}"
+
+
+        compile("org.projectlombok:lombok:${lombokVersion}")
+        compile("commons-io:commons-io:2.4")
+        compile "org.yaml:snakeyaml:1.7"
+
+        compile("ch.qos.logback:logback-classic:${logbackVersion}")
+        compile("ch.qos.logback:logback-core:${logbackVersion}")
+        compile("org.slf4j:slf4j-api:${slf4jVersion}")
+
+
+        testCompile("junit:junit:${junitVersion}")
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+        testCompile('org.mockito:mockito-core')
+        testCompile('com.h2database:h2:1.4.195')
+
+    }
 }
 
+project(":grouping-api") {
+    dependencies {
+        compile project(":grouping-core")
+    }
+}
 
-dependencies {
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    runtime('com.h2database:h2')
-    compileOnly('org.projectlombok:lombok')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+project(":grouping-cms") {
+    dependencies {
+        compile project(":grouping-core")
+    }
+}
+
+project(":grouping-gw") {
+    dependencies {
+        compile project(":grouping-core")
+    }
+}
+
+project(":grouping-auth") {
+    dependencies {
+        compile project(":grouping-core")
+    }
 }

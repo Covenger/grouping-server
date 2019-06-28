@@ -1,0 +1,27 @@
+jar {
+    baseName = 'grouping-cms'
+    version = '1.0.0-SNAPSHOT'
+}
+buildscript {
+    ext {
+    }
+}
+dependencies {
+    testCompile('org.springframework.security:spring-security-test')
+}
+
+final String DEFAULT_PROFILE = 'local'
+allprojects {
+    if (!project.hasProperty('profile') || !profile) {
+        ext.profile = DEFAULT_PROFILE
+    }
+
+    println "profile: $profile"
+    sourceSets {
+        main {
+            resources {
+                srcDir "src/main/resources-${profile}"
+            }
+        }
+    }
+}

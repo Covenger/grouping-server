@@ -1,1 +1,2 @@
 rootProject.name = 'grouping'
+include 'grouping-core', 'grouping-gw', 'grouping-api', 'grouping-auth', 'grouping-cms'
